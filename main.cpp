@@ -25,21 +25,24 @@ int main(int argc, char **argv)
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 	MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-	MPI_Datatype MPI_PERSON = commit_type();
-
 	double start = MPI_Wtime();
 
 	int n = atoi(argv[1]);
 	int m = atoi(argv[2]);
 
-	int		**arr;
+	int	**arr = allocate_matrix(n / size, m);
 	Person	*person;
-	if (rank == 0)
+	if (rank == size / 2)
 	{
-		arr = allocate_matrix(n, m);
-		person = allocate_persons(arr, n, m);
+		arr[1][1] = 2;
 	}
-	loop(arr, n, m, person, atoi(argv[3]));
+	//int		**local_arr = allocate_matrix(n / size, m);
+
+	//MPI_Datatype MPI_PERSON = commit_type();
+	//MPI_Datatype MPI_VECTOR = vector(size, n, m);
+	print_matrix(arr, n / size, m, *person);
+	
+	//loop(arr, n, m, person, atoi(argv[3]));
 	
 	double end = MPI_Wtime();
 

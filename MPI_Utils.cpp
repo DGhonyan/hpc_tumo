@@ -21,3 +21,14 @@ MPI_Datatype	commit_type(void)
 	MPI_Type_commit(&MPI_PERSON);
 	return MPI_PERSON;
 }
+
+MPI_Datatype	vector(int size, int n, int m)
+{
+	int				vector_size = n / size + 2;
+	MPI_Datatype	MPI_VECTOR;
+
+	MPI_Type_vector(vector_size, m + 2, m + 2, MPI_INT, &MPI_VECTOR);
+	MPI_Type_commit(&MPI_VECTOR);
+
+	return (MPI_VECTOR);
+}

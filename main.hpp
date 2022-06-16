@@ -20,6 +20,7 @@ void			print_matrix(int **arr, int n, int m, Person person);
 void			loop(int **arr, int n, int m, Person *persArr, int iterations);
 int				**allocate_matrix(int n, int m);
 MPI_Datatype	commit_type(void);
+MPI_Datatype	vector(int size, int n, int m);
 Person			*allocate_persons(int **arr, int n, int m);
 
 //# include "mlx_linux/mlx.h"
