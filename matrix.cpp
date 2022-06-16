@@ -1,11 +1,12 @@
 #include "main.hpp"
 
-static int	persCount(int **arr, int size)
+static int	persCount(int **arr, int n, int m)
 {
+	return (1);
 	int count = 0;
-	for (int i = 0; i < size; i++)
+	for (int i = 1; i < n + 1; i++)
 	{
-		for (int j = 0; j < size; j++)
+		for (int j = 1; j < m + 1; j++)
 		{
 			if (arr[i][j] == 2)
 				count++;
@@ -14,16 +15,16 @@ static int	persCount(int **arr, int size)
 	return (count);
 }
 
-Person	*allocate_persons(int **arr, int size)
+Person	*allocate_persons(int **arr, int n ,int m)
 {
 	int		k = 0;
-	Person	*personArr = (Person *)malloc(sizeof (*personArr) * persCount(arr, size));
+	Person	*personArr = (Person *)malloc(sizeof (*personArr) * persCount(arr, n, m));
 
 	if (!personArr)
 		exit (EXIT_FAILURE);
-	for (int i = 0; i < size; i++)
+	for (int i = 1; i < n + 1; i++)
 	{
-		for (int j = 0; j < size; j++)
+		for (int j = 1; j < m + 1; j++)
 		{
 			if (arr[i][j] == 2)
 			{
@@ -31,66 +32,78 @@ Person	*allocate_persons(int **arr, int size)
 				personArr[k] = person;
 				personArr[k].x = j;
 				personArr[k].y = i;
-				k++;
+				break ;
 			}
 		}
 	}
-	std::cout << personArr[0].x << personArr[0].y;
 	return (personArr);
 }
 
-void	print_matrix(int **arr, int size, Person person)
+void	print_matrix(int **arr, int n, int m, Person person)
 {
-	for (int i = 0; i < size; i++)
+	for (int i = 0; i < n + 2; i++)
 	{
-		for (int j = 0; j < size; j++)
+		for (int j = 0; j < m + 2; j++)
 		{
 			if (arr[i][j] == 1)
-				std::cout << MAGENTA << arr[i][j] << RESET << " ";
-			// else if (arr[i][j] == 0)
-			// 	std::cout << MAGENTA << arr[i][j] << RESET << " ";	
+				std::cout << BMAGENTA << arr[i][j] << RESET << " ";
 			else if (arr[i][j] == 2)
 			{
 				std::string color;
 				if (person.health >= 100)
-					color = GREEN;
+					color = BGREEN;
 				else if (person.health >= 80 && person.health < 100)
-					color = YELLOW;
+					color = BYELLOW;
 				else if (person.health >= 50 && person.health < 80)
-					color = CYAN;
+					color = BCYAN;
 				else if (person.health >= 25 && person.health < 50)
-					color = BLUE;
+					color = BBLUE;
 				else if (person.health >= 1 && person.health < 25)
-					color = RED;
+					color = BRED;
 				else
-					color = BLACK;
+					color = RED;
 				std::cout << color << arr[i][j] << RESET << " ";
 			}
+			else if ((i == 0 || i == n + 1) || (j == 0 || j == (m + 1)))
+				std::cout << BBLACK << arr[i][j] << RESET << " ";
 			else
 				std::cout << arr[i][j] << " ";
-				
 		}
 		std::cout << "\n";
 	}
 }
 
-int	**allocate_matrix(int size)
+void	fill(int **arr, int n, int m)
 {
-	int	**res = (int **)malloc(sizeof (*res) * size);
-	if (!res)
-		exit (EXIT_FAILURE);
-	//int	*row = (int *)calloc(sizeof (*row), size);
-
-	for (int i = 0; i < size; i++)
+	for (int i = 0; i < n + 2; i++)
 	{
-		//res[i] = row;
-		res[i] = (int *)calloc(sizeof (*res[i]), size);
-		if (!res[i])
-			exit (EXIT_FAILURE);
-		res[i][i] = 1;
-		res[i][size - i - 1] = 1;
+		for (int j = 0; j < m + 2; j++)
+		{
+			arr[i][j] = 0;
+			if ((i > 0 && i < n + 1) && (j > 0 && j < m + 1))
+				arr[i][j] = (i == j) || (j == ((m + 2) - 1 - i));
+		}
 	}
-	res[size / 2][size / 2] = 2;
-	//print_matrix(res, size);
+}
+
+int	**allocate_matrix(int n, int m)
+{
+	int	**res = (int **)malloc(sizeof (*res) * (n + 2));
+	int	*row = (int *)malloc(sizeof (*row) * (n + 2) * (m + 2));
+	if (!res || !row)
+		exit (EXIT_FAILURE);
+	int j = 0;
+	for (int i = 0; i < n + 2; i++)
+	{
+		res[i] = &row[i * (m + 2)];
+		res[i][j] = 0;
+	}
+	fill(res, n, m);
+	Person pers;
+	if (n / 2 < 1 || m / 2 < 1)
+		res[1][1] = 2;
+	else
+		res[n / 2][m / 2] = 2;
+	//print_matrix(res, n, m, pers);
 	return (res);
 }
