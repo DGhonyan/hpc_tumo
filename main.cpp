@@ -41,12 +41,7 @@ int main(int argc, char **argv)
 		person.rank = rank;
 		arr[1][1] = 2;
 	}
-	// print_matrix(arr, n / size, m, *person);
 	loop(arr, n / size, m, ptr, atoi(argv[3]), rank, size);
-	// if (rank == size / 2)
-	// {
-	// 	print_matrix(arr, n / size, m, *person);
-	// }
 
 	double end = MPI_Wtime();
 	if (rank == 0)

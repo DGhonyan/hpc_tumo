@@ -34,7 +34,6 @@ void	loop(int **arr, int n, int m, Person *persArr, int iterations, int rank, in
 				funcs[index](arr, &persArr[0], n, m);
 				if (i % 400 == 0 && !persArr[0].health)
 					persArr[0].health = 100; 
-				std::cout << 1;
 			}
 		}
 		// else
