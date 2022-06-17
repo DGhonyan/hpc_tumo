@@ -4,10 +4,10 @@
 
 typedef struct Person
 {
-	int x = 0;
-	int y = 0;
+	int x = 1;
+	int y = 1;
 	int	health = 1000;
-	int	mult = 0;
+	int	rank = 0;
 } Person;
 
 

@@ -31,22 +31,29 @@ int main(int argc, char **argv)
 	int m = atoi(argv[2]);
 
 	int	**arr = allocate_matrix(n / size, m);
-	Person	*person;
+	Person	person;
+	Person *ptr = &person;
+	
 	if (rank == size / 2)
 	{
+		person.x = 1;
+		person.y = 1;
+		person.rank = rank;
 		arr[1][1] = 2;
 	}
-	//int		**local_arr = allocate_matrix(n / size, m);
+	// print_matrix(arr, n / size, m, *person);
+	loop(arr, n / size, m, ptr, atoi(argv[3]), rank, size);
+	// if (rank == size / 2)
+	// {
+	// 	print_matrix(arr, n / size, m, *person);
+	// }
 
-	//MPI_Datatype MPI_PERSON = commit_type();
-	//MPI_Datatype MPI_VECTOR = vector(size, n, m);
-	print_matrix(arr, n / size, m, *person);
-	
-	//loop(arr, n, m, person, atoi(argv[3]));
-	
 	double end = MPI_Wtime();
-
-	std::cout << GREEN << "\nTime took to execute: " << end - start << "s" << RESET << "\n";
+	if (rank == 0)
+	{
+		std::cout << GREEN << "\nTime took to execute: " << end - start << "s" << RESET << "\n";
+	}
+	exit (EXIT_SUCCESS);
 	MPI_Finalize();
 }
 

@@ -6,33 +6,45 @@ void	move_right(int **arr, Person *person, int n, int m);
 void	move_left(int **arr, Person *person, int n, int m);
 void	grass_mult(int **arr, int n, int m, int seed);
 
-void	loop(int **arr, int n, int m, Person *persArr, int iterations)
+void	loop(int **arr, int n, int m, Person *persArr, int iterations, int rank, int size)
 {
 	int i = 0;
+	MPI_Datatype MPI_PERSON = commit_type();
 	Function funcs[4] = {&move_up, &move_down, &move_right, &move_left};
 	while (iterations--)
 	{
 		i++;
-		struct sysinfo info;
-		sysinfo(&info);
-		int	th = 1000;
-		unsigned int seed;
-		if (persArr[0].health)
+		if (persArr[0].rank == rank)
 		{
-			seed = i + ((int)MPI_Wtime() * th) + (info.totalram - info.freeram);
-			srand(seed);
-			funcs[rand() % 4](arr, &persArr[0], n, m);
+			//arr[persArr[0].y][persArr[0].x] = 2;
+			if (persArr[0].health)
+			{
+				srand(time(NULL));
+				int index = rand() % 4;
+				if (rank != 0 && index == 0 && persArr[0].y == 1)
+				{
+					persArr[0].rank = rank - 1;
+					persArr[0].y = n;
+				}
+				else if (rank != size - 1 && index == 1 && persArr[0].y == n)
+				{
+					persArr[0].rank = rank + 1;
+					persArr[0].y = 1;
+				}
+				funcs[index](arr, &persArr[0], n, m);
+				if (i % 400 == 0 && !persArr[0].health)
+					persArr[0].health = 100; 
+				std::cout << 1;
+			}
 		}
-		// if (i % 20 == 0)
-			print_matrix(arr, n, m, *persArr);
-		if (i % 400 == 0 && !persArr[0].health)
-			persArr[0].health = 100; 
-		seed = i + ((int)MPI_Wtime() * th) + (info.totalram - info.freeram);
+		// else
+		// 	arr[persArr[0].y][persArr[0].x] = 0;
+		MPI_Bcast(persArr, 1, MPI_PERSON, persArr[0].rank, MPI_COMM_WORLD);
 		if (i % 10 == 0)
-			grass_mult(arr, n, m, seed);
+			grass_mult(arr, n, m, time(NULL));
 	}
-	if (i % 2 != 0)
-		print_matrix(arr, n, m, *persArr);
+	//if (i % 2 != 0)
+	//	print_matrix(arr, n, m, *persArr);
 }
 
 void	grass_mult(int **arr, int n, int m, int seed)
@@ -48,7 +60,7 @@ void	stats(int **arr, Person *person)
 	if (arr[person->y][person->x] == 1)
 	{
 		person->health += 10;
-		person->mult += 2;
+		//person->mult += 2;
 	}
 	else
 	{
@@ -70,7 +82,7 @@ void	move_up(int **arr, Person *person, int n, int m)
 }
 void	move_down(int **arr, Person *person, int n, int m)
 {
-	if (person->y < n&& arr[person->y + 1][person->x] != 2)
+	if (person->y < n && arr[person->y + 1][person->x] != 2)
 	{
 		arr[person->y][person->x] = 0;
 

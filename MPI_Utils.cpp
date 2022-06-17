@@ -9,7 +9,7 @@ MPI_Datatype	commit_type(void)
 		offsetof(Person, x),
 		offsetof(Person, y),
 		offsetof(Person, health),
-		offsetof(Person, mult),
+		offsetof(Person, rank),
 	};
 	MPI_Datatype types[] = {
 		MPI_INT,

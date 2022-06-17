@@ -93,7 +93,10 @@ int	**allocate_matrix(int n, int m)
 	int	**res = (int **)malloc(sizeof (*res) * (n + 2));
 	int	*row = (int *)malloc(sizeof (*row) * (n + 2) * (m + 2));
 	if (!res || !row)
+	{
+		perror("Malloc's dead");
 		exit (EXIT_FAILURE);
+	}
 	int j = 0;
 	for (int i = 0; i < n + 2; i++)
 	{
